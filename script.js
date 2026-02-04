@@ -1,15 +1,10 @@
 
+let hunger = localStorage.getItem("hunger") === "true";
+let sleepy = localStorage.getItem("sleepy") === "true";
+let bored = localStorage.getItem("bored") === "true";
 
-
-let hunger = false;
-let sleepy = false;
-let bored = false;
-localStorage.setItem("hunger", "false");
-localStorage.setItem("sleepy", "false");
-localStorage.setItem("bored", "false");
-
-let intervalID = setInterval(changeNeed, 5000);
-
+let intervalID = setInterval(changeNeed, 15000);
+moodchange();
 
 function changeNeed() {
     let need = Math.floor(Math.random() * 3);
@@ -18,13 +13,15 @@ function changeNeed() {
         localStorage.setItem("hunger", "true");
     } else if(need === 1) {
         sleepy = true;
-        hunger=false;
         localStorage.setItem("sleepy", "true");
     } else {
         bored = true;
-        sleepy = false;
         localStorage.setItem("bored", "true");
     }
+    // Save all values to localStorage for consistency
+    localStorage.setItem("hunger", hunger.toString());
+    localStorage.setItem("sleepy", sleepy.toString());
+    localStorage.setItem("bored", bored.toString());
     moodchange();
 }
 
@@ -56,17 +53,29 @@ function moodchange(){
 document.getElementById("Buttons").addEventListener("click", function(event) {
     //does the opposite for test purposes
     if(event.target.id === "sleep") {
-        sleepy = false;
-        localStorage.setItem("sleepy", "false");
-        petDisplay.innerHTML = '<img src="pet_sleep.png">';
+        if(sleepy){
+            sleepy = false;
+            localStorage.setItem("sleepy", "false");
+            localStorage.setItem("hunger", hunger.toString());
+            localStorage.setItem("bored", bored.toString());
+            petDisplay.innerHTML = '<img src="pet_sleep.png">';
+        }
     } else if(event.target.id === "play") {
-        bored = false;
-        localStorage.setItem("bored", "false");
-        petDisplay.innerHTML = '<img src="pet_playing.png">';
+        if(bored){
+            bored = false;
+            localStorage.setItem("bored", "false");
+            localStorage.setItem("hunger", hunger.toString());
+            localStorage.setItem("sleepy", sleepy.toString());
+            petDisplay.innerHTML = '<img src="pet_playing.png">';
+        }
     } else if(event.target.id === "feed") {
-        hunger = false;
-        localStorage.setItem("hunger", "false");
-        petDisplay.innerHTML = '<img src="pet_eating.png">';
+        if(hunger){
+            hunger = false;
+            localStorage.setItem("hunger", "false");
+            localStorage.setItem("sleepy", sleepy.toString());
+            localStorage.setItem("bored", bored.toString());
+            petDisplay.innerHTML = '<img src="pet_eating.png">';
+        }
     } else if(event.target.id === "evil") {
         hunger = true;
         sleepy = true;
@@ -75,5 +84,9 @@ document.getElementById("Buttons").addEventListener("click", function(event) {
         localStorage.setItem("sleepy", "true");
         localStorage.setItem("bored", "true");
     }
+    // Save all values to localStorage for consistency
+    localStorage.setItem("hunger", hunger.toString());
+    localStorage.setItem("sleepy", sleepy.toString());
+    localStorage.setItem("bored", bored.toString());
     let timeoutID = setTimeout(moodchange, 2500);
 });
